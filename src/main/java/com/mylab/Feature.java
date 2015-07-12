@@ -6,8 +6,9 @@ import java.util.Map;
 public class Feature {
 
 	private String type = "type";
-	private Map<String, Object> properties = new HashMap<String, Object>();
+	private Map<String, String> properties = new HashMap<String, String>();
 	private Map<String, Object> geometry = new HashMap<String, Object>();
+
 	public String getType() {
 		return type;
 	}
@@ -16,20 +17,20 @@ public class Feature {
 		this.type = type;
 	}
 
-	public Map<String, Object> getProperties() {
-		return properties;
-	}
-
-	public void setProperties(Map<String, Object> properties) {
-		this.properties = properties;
-	}
-
 	public Map<String, Object> getGeometry() {
 		return geometry;
 	}
 
 	public void setGeometry(Map<String, Object> geometry) {
 		this.geometry = geometry;
+	}
+
+	public Map<String, String> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(Map<String, String> properties) {
+		this.properties = properties;
 	}
 
 }

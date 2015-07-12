@@ -5,8 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Geometry {
+public class Geometry extends HashMap {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String type = "type";
 	private ArrayList<Feature> coordinates = new ArrayList<Feature>();
 
