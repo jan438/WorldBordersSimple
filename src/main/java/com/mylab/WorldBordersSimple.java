@@ -4,16 +4,21 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.geojson.LngLatAlt;
 
 public class WorldBordersSimple {
 
@@ -25,8 +30,11 @@ public class WorldBordersSimple {
 	static String type;
 
 	@SuppressWarnings("unchecked")
-	public static void main(String[] args) {
-
+	public static void main(String[] args) throws ParseException {
+		NumberFormat nf = NumberFormat.getNumberInstance(Locale.forLanguageTag("en_US"));
+		DecimalFormat df = (DecimalFormat)nf;
+		String pattern = "##.#####";
+		df.applyPattern(pattern);
 		try {
 			PrintWriter writer = new PrintWriter("netherlands_borders.txt", "UTF-8");
 			InputStream inputstream = new FileInputStream(
@@ -64,13 +72,21 @@ public class WorldBordersSimple {
 							Iterator<String> po = latlng.iterator();
 							int pcount = 0;
 							while (po.hasNext()) {
-								Object s = po.next();
-								ArrayList<String> pp = (ArrayList<String>) s;
-								Iterator<String> kk = pp.iterator();
-								while (kk.hasNext()) {
-									Object point = kk.next();
+								Object po_object = po.next();
+								ArrayList<String> po_array = (ArrayList<String>) po_object;
+								Iterator<String> longlat = po_array.iterator();
+								while (longlat.hasNext()) {
+									Object point = longlat.next();
+									String s = point.toString();
+									s = s.substring(1, s.length()-1);
+									String[] parts = s.split(",");
+									String longitude = parts[0];
+									String latitude = parts[1];
+									double dlon = Double.valueOf(longitude.trim()).doubleValue();
+									double dlat = Double.valueOf(latitude.trim()).doubleValue();
 									System.out.println("Poly: " + poly_count
-											+ " Point: " + point);
+											+ " Point: " + longitude + ", " + latitude);
+									LngLatAlt lnglat = new LngLatAlt(dlon,dlat);
 									writer.println(point);
 									pcount++;
 								}
