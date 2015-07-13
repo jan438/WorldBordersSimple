@@ -31,29 +31,33 @@ public class WorldBordersSimple {
 					"/home/jan/Downloads/TM_WORLD_SIMPLE/TM_WORLD_SIMPLE.json");
 			FeatureCollection featureCollection = new FeatureCollection();
 			ObjectMapper mapper = new ObjectMapper();
-			featureCollection = mapper.readValue(inputstream, FeatureCollection.class);
+			featureCollection = mapper.readValue(inputstream,
+					FeatureCollection.class);
 			inputstream.close();
 			System.out.println(featureCollection.getType());
 			features = featureCollection.getFeatures();
 			System.out.println(features.size());
 			Iterator<Feature> fit = features.iterator();
-			int fcount = 0;
+			int feature_count = 0;
 			while (fit.hasNext()) {
 				feature = fit.next();
 				Map<String, String> properties = feature.getProperties();
 				name = properties.get("NAME");
-				geometry = (LinkedHashMap<String, Object>) feature.getGeometry();
-				System.out.println("FCount: " + fcount + " : " + name);
+				geometry = (LinkedHashMap<String, Object>) feature
+						.getGeometry();
+				System.out.println("FCount: " + feature_count + " : " + name);
 				type = (String) geometry.get("type");
 				System.out.println("Geometry type: " + type);
 				if (type.equals("MultiPolygon")) {
-					coordinates = (ArrayList<String>) geometry.get("coordinates");
-					System.out.println("Number of polygons: " + coordinates.size());
-					Iterator<String> cit = coordinates.iterator();
-					int ccount = 0;
-					while (cit.hasNext()) {
-						Object coordinate = cit.next();
-						ArrayList<String> latlng = (ArrayList<String>) coordinate;
+					coordinates = (ArrayList<String>) geometry
+							.get("coordinates");
+					System.out.println("Number of polygons: "
+							+ coordinates.size());
+					Iterator<String> poly_it = coordinates.iterator();
+					int poly_count = 0;
+					while (poly_it.hasNext()) {
+						Object polygon = poly_it.next();
+						ArrayList<String> latlng = (ArrayList<String>) polygon;
 						Iterator<String> po = latlng.iterator();
 						int pcount = 0;
 						while (po.hasNext()) {
@@ -62,17 +66,19 @@ public class WorldBordersSimple {
 							Iterator<String> kk = pp.iterator();
 							while (kk.hasNext()) {
 								Object point = kk.next();
-								System.out.println("Point: " + point);
+								System.out.println("Poly: " + poly_count
+										+ " Point: " + point);
+								pcount++;
 							}
-							pcount++;
 						}
-						ccount++;
+						poly_count++;
 					}
-					System.out.println("Total coordinates: " + ccount);
 				}
 				if (type.equals("Polygon")) {
-					coordinates = (ArrayList<String>) geometry.get("coordinates");
-					System.out.println("Number of polygons: " + coordinates.size());
+					coordinates = (ArrayList<String>) geometry
+							.get("coordinates");
+					System.out.println("Number of polygons: "
+							+ coordinates.size());
 					Iterator<String> cit = coordinates.iterator();
 					int ccount = 0;
 					while (cit.hasNext()) {
@@ -83,21 +89,17 @@ public class WorldBordersSimple {
 						while (po.hasNext()) {
 							Object s = po.next();
 							ArrayList<String> pp = (ArrayList<String>) s;
-							Iterator<String> kk = pp.iterator();
-							while (kk.hasNext()) {
-								Object point = kk.next();
-								System.out.println("Point: " + point);
-							}
+							System.out.println("Point: " + s);
 							pcount++;
 						}
 						ccount++;
 					}
 					System.out.println("Total coordinates: " + ccount);
 				}
-				fcount++;
-				if (fcount==2) break;
+				feature_count++;
+				/* if (feature_count==2) break; */
 			}
-			System.out.println("Total features: " + fcount);
+			System.out.println("Total features: " + feature_count);
 		} catch (JsonGenerationException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
