@@ -8,7 +8,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.Map;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.geojson.LngLatAlt;
 
 public class WorldBordersSimple {
 
@@ -28,6 +26,8 @@ public class WorldBordersSimple {
 	static String name;
 	static ArrayList<String> coordinates;
 	static String type;
+	static int line_count;
+	static int count;
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws ParseException {
@@ -36,7 +36,7 @@ public class WorldBordersSimple {
 		String pattern = "##.#####";
 		df.applyPattern(pattern);
 		try {
-			PrintWriter writer = new PrintWriter("netherlands_borders.txt", "UTF-8");
+			PrintWriter writer = new PrintWriter("netherlands_borders.js", "UTF-8");
 			InputStream inputstream = new FileInputStream(
 					"/home/jan/Downloads/TM_WORLD_SIMPLE/TM_WORLD_SIMPLE.json");
 			FeatureCollection featureCollection = new FeatureCollection();
@@ -55,23 +55,25 @@ public class WorldBordersSimple {
 				name = properties.get("NAME");
 				geometry = (LinkedHashMap<String, Object>) feature
 						.getGeometry();
-				System.out.println("FCount: " + feature_count + " : " + name);
 				if (name.equals("Netherlands")) {
 					type = (String) geometry.get("type");
-					System.out.println("Geometry type: " + type);
+					System.out.println("Geometry type " + name + " : " + type );
 					if (type.equals("MultiPolygon")) {
 						coordinates = (ArrayList<String>) geometry
 								.get("coordinates");
+						line_count = coordinates.size();
 						System.out.println("Number of polygons: "
-								+ coordinates.size());
+								+ line_count);
 						Iterator<String> poly_it = coordinates.iterator();
-						int poly_count = 0;
+						count = 0;
+						writer.print("var myLines = [{ ");
 						while (poly_it.hasNext()) {
-							Object polygon = poly_it.next();
-							ArrayList<String> latlng = (ArrayList<String>) polygon;
+							Object polygon_object = poly_it.next();
+							ArrayList<String> latlng = (ArrayList<String>) polygon_object;
 							Iterator<String> po = latlng.iterator();
-							int pcount = 0;
+							writer.print(" 'type': 'LineString', 'coordinates': ");
 							while (po.hasNext()) {
+								List<LngLat> polygon = new ArrayList<LngLat>();
 								Object po_object = po.next();
 								ArrayList<String> po_array = (ArrayList<String>) po_object;
 								Iterator<String> longlat = po_array.iterator();
@@ -84,42 +86,22 @@ public class WorldBordersSimple {
 									String latitude = parts[1];
 									double dlon = Double.valueOf(longitude.trim()).doubleValue();
 									double dlat = Double.valueOf(latitude.trim()).doubleValue();
-									System.out.println("Poly: " + poly_count
-											+ " Point: " + longitude + ", " + latitude);
-									LngLatAlt lnglat = new LngLatAlt(dlon,dlat);
-									writer.println(point);
-									pcount++;
+									LngLat lnglat = new LngLat(dlon,dlat);
+									polygon.add(lnglat);
+								}
+								writer.println(polygon);
+								if (count < line_count - 1) { 
+									writer.print("}, {");
+								}
+								else {
+									writer.print("}];");
 								}
 							}
-							poly_count++;
+							count++;
 						}
-					}
-					if (type.equals("Polygon")) {
-						coordinates = (ArrayList<String>) geometry
-								.get("coordinates");
-						System.out.println("Number of polygons: "
-								+ coordinates.size());
-						Iterator<String> cit = coordinates.iterator();
-						int ccount = 0;
-						while (cit.hasNext()) {
-							Object coordinate = cit.next();
-							ArrayList<String> latlng = (ArrayList<String>) coordinate;
-							Iterator<String> po = latlng.iterator();
-							int pcount = 0;
-							while (po.hasNext()) {
-								Object s = po.next();
-								ArrayList<String> pp = (ArrayList<String>) s;
-								System.out.println("Point: " + s);
-								writer.println(s);
-								pcount++;
-							}
-							ccount++;
-						}
-						System.out.println("Total coordinates: " + ccount);
 					}
 				}
 				feature_count++;
-				/* if (feature_count==2) break; */
 			}
 			writer.close();
 			System.out.println("Total features: " + feature_count);
