@@ -14,7 +14,7 @@
 	<dependency>
 		<groupId>org.codehaus.jackson</groupId>
 		<artifactId>jackson-mapper-asl</artifactId>
-		<version>1.8.5</version>
+		<version>1.9.13</version>
 	</dependency>
     <dependency>
   		<groupId>de.grundid.opendatalab</groupId>
@@ -22,4 +22,20 @@
   		<version>1.5</version>
     </dependency>
   </dependencies>
+  <build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>com.mylab.WorldBordersSimple</mainClass>
+							<addClasspath>true</addClasspath>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+  </build>
 </project>
