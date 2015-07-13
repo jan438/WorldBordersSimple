@@ -38,7 +38,7 @@ public class WorldBordersSimple {
 		try {
 			PrintWriter writer = new PrintWriter("netherlands_borders.js", "UTF-8");
 			InputStream inputstream = new FileInputStream(
-					"/home/jan/Downloads/TM_WORLD_SIMPLE/TM_WORLD_SIMPLE.json");
+					"/home/jan/Downloads/TM_WORLD/TM_WORLD.json");
 			FeatureCollection featureCollection = new FeatureCollection();
 			ObjectMapper mapper = new ObjectMapper();
 			featureCollection = mapper.readValue(inputstream,
