@@ -66,7 +66,7 @@ public class WorldBordersSimple {
 								+ line_count);
 						Iterator<String> poly_it = coordinates.iterator();
 						count = 0;
-						writer.print("var myLines = [{ ");
+						writer.print("var netherlands_borders = [{ ");
 						while (poly_it.hasNext()) {
 							Object polygon_object = poly_it.next();
 							ArrayList<String> latlng = (ArrayList<String>) polygon_object;
